@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Box Clicking Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+        #game-container {
+            position: relative;
+            width: 90vw;
+            height: 70vh;
+            background-color: #fff;
+            border: 2px solid #333;
+            border-radius: 8px;
+            cursor: crosshair;
+        }
+        .box {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: #ff4757;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .box:active { transform: scale(0.9); }
+        #ui { margin-bottom: 20px; text-align: center; }
+        .stats { font-size: 1.2rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div id="ui">
+        <h1>Click the Box!</h1>
+        <div class="stats">Score: <span id="score">0</span> | Time: <span id="timer">30</span>s</div>
+    </div>
+    <div id="game-container">
+        <div id="box" class="box"></div>
+    </div>
+
+    <script>
+        let score = 0;
+        let timeLeft = 30;
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const box = document.getElementById('box');
+        const container = document.getElementById('game-container');
+
+        function moveBox() {
+            const maxX = container.clientWidth - box.clientWidth;
+            const maxY = container.clientHeight - box.clientHeight;
+            box.style.left = Math.floor(Math.random() * maxX) + 'px';
+            box.style.top = Math.floor(Math.random() * maxY) + 'px';
+            const colors = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#3742fa'];
+            box.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        box.addEventListener('click', () => {
+            if (timeLeft > 0) {
+                score++;
+                scoreDisplay.textContent = score;
+                moveBox();
+            }
+        });
+
+        const gameTimer = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(gameTimer);
+                box.style.display = 'none';
+                alert('Game Over! Your final score is: ' + score);
+                location.reload(); 
+            }
+        }, 1000);
+        moveBox();
+    </script>
+</body>
+</html>
