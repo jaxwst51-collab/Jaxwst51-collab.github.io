@@ -3,87 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Box Clicking Game</title>
+    <title>Game</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+            background-color: black;
             margin: 0;
-            background-color: #f0f0f0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: sans-serif;
         }
-        #game-container {
-            position: relative;
-            width: 90vw;
-            height: 70vh;
-            background-color: #fff;
-            border: 2px solid #333;
-            border-radius: 8px;
-            cursor: crosshair;
-        }
-        .box {
+
+        /* The Score - Only text on screen */
+        #score {
             position: absolute;
-            width: 50px;
-            height: 50px;
-            background-color: #ff4757;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: transform 0.1s;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            pointer-events: none;
+            user-select: none;
         }
-        .box:active { transform: scale(0.9); }
-        #ui { margin-bottom: 20px; text-align: center; }
-        .stats { font-size: 1.2rem; font-weight: bold; }
+
+        /* The Cube - Sharp edges, no rounding */
+        #cube {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            /* Ensuring edges stay perfectly sharp */
+            border-radius: 0; 
+        }
     </style>
 </head>
 <body>
-    <div id="ui">
-        <h1>Click the Box!</h1>
-        <div class="stats">Score: <span id="score">0</span> | Time: <span id="timer">30</span>s</div>
-    </div>
-    <div id="game-container">
-        <div id="box" class="box"></div>
-    </div>
+
+    <div id="score">0</div>
+    <div id="cube"></div>
 
     <script>
         let score = 0;
-        let timeLeft = 30;
         const scoreDisplay = document.getElementById('score');
-        const timerDisplay = document.getElementById('timer');
-        const box = document.getElementById('box');
-        const container = document.getElementById('game-container');
+        const cube = document.getElementById('cube');
+        
+        // List of bright colors
+        const brightColors = ['#00FF00', '#FF00FF', '#00FFFF', '#FFFF00', '#FF3131', '#39FF14', '#FF5E00'];
 
-        function moveBox() {
-            const maxX = container.clientWidth - box.clientWidth;
-            const maxY = container.clientHeight - box.clientHeight;
-            box.style.left = Math.floor(Math.random() * maxX) + 'px';
-            box.style.top = Math.floor(Math.random() * maxY) + 'px';
-            const colors = ['#ff4757', '#2ed573', '#1e90ff', '#ffa502', '#3742fa'];
-            box.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        function moveCube() {
+            const maxX = window.innerWidth - cube.clientWidth;
+            const maxY = window.innerHeight - cube.clientHeight;
+            
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            
+            cube.style.left = randomX + 'px';
+            cube.style.top = randomY + 'px';
+            
+            // Pick a random bright color
+            const randomColor = brightColors[Math.floor(Math.random() * brightColors.length)];
+            cube.style.backgroundColor = randomColor;
         }
 
-        box.addEventListener('click', () => {
-            if (timeLeft > 0) {
-                score++;
-                scoreDisplay.textContent = score;
-                moveBox();
-            }
+        cube.addEventListener('mousedown', (e) => {
+            score++;
+            scoreDisplay.textContent = score;
+            moveCube();
+            e.preventDefault(); // Prevents accidental text selection/zooming
         });
 
-        const gameTimer = setInterval(() => {
-            timeLeft--;
-            timerDisplay.textContent = timeLeft;
-            if (timeLeft <= 0) {
-                clearInterval(gameTimer);
-                box.style.display = 'none';
-                alert('Game Over! Your final score is: ' + score);
-                location.reload(); 
-            }
-        }, 1000);
-        moveBox();
+        // Start the game
+        moveCube();
     </script>
 </body>
 </html>
