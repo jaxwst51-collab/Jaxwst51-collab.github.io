@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game</title>
+    <title>Pickle Game</title>
     <style>
         body {
             background-color: black;
@@ -28,56 +28,56 @@
             font-weight: bold;
             pointer-events: none;
             user-select: none;
+            z-index: 10;
         }
 
-        /* The Cube - Sharp edges, no rounding */
-        #cube {
+        /* The Pickle - Replaces the Cube */
+        #pickle {
             position: absolute;
-            width: 60px;
-            height: 60px;
+            width: 100px; /* Adjust size as needed */
+            height: auto;
             cursor: pointer;
-            /* Ensuring edges stay perfectly sharp */
-            border-radius: 0; 
+            user-select: none;
+            -webkit-user-drag: none;
         }
     </style>
 </head>
 <body>
 
     <div id="score">0</div>
-    <div id="cube"></div>
+    <!-- Replaced the div with an img tag for your pickle -->
+    <img src="pickle.png" id="pickle" alt="Pickle">
 
     <script>
         let score = 0;
         const scoreDisplay = document.getElementById('score');
-        const cube = document.getElementById('cube');
-        
-        // List of bright colors
-        const brightColors = ['#00FF00', '#FF00FF', '#00FFFF', '#FFFF00', '#FF3131', '#39FF14', '#FF5E00'];
+        const pickle = document.getElementById('pickle');
 
-        function moveCube() {
-            const maxX = window.innerWidth - cube.clientWidth;
-            const maxY = window.innerHeight - cube.clientHeight;
+        function movePickle() {
+            const maxX = window.innerWidth - pickle.clientWidth;
+            const maxY = window.innerHeight - pickle.clientHeight;
             
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
+            // Randomly position the pickle
+            const randomX = Math.floor(Math.random() * Math.max(0, maxX));
+            const randomY = Math.floor(Math.random() * Math.max(0, maxY));
             
-            cube.style.left = randomX + 'px';
-            cube.style.top = randomY + 'px';
-            
-            // Pick a random bright color
-            const randomColor = brightColors[Math.floor(Math.random() * brightColors.length)];
-            cube.style.backgroundColor = randomColor;
+            pickle.style.left = randomX + 'px';
+            pickle.style.top = randomY + 'px';
         }
 
-        cube.addEventListener('mousedown', (e) => {
+        // Event listener for clicks/taps
+        pickle.addEventListener('mousedown', (e) => {
             score++;
             scoreDisplay.textContent = score;
-            moveCube();
-            e.preventDefault(); // Prevents accidental text selection/zooming
+            movePickle();
+            e.preventDefault(); 
         });
 
-        // Start the game
-        moveCube();
+        // Initialize position once the image is loaded
+        pickle.onload = movePickle;
+        
+        // Safety call in case image is already cached
+        movePickle();
     </script>
 </body>
 </html>
